@@ -1,14 +1,15 @@
 import 'package:easy_context/easy_context.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:vital_bloom/common_widgets/buttons.dart';
+import 'package:vital_bloom/core/routes/routes.dart';
+import 'package:vital_bloom/models/user.dart';
 import 'package:vital_bloom/services/auth_service.dart';
-
+import 'package:vital_bloom/utils/utils.dart';
 import '../../locator.dart';
 import '../../utils/colors.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final GoogleSignInAccount user;
+  final User user;
   const ProfileScreen({super.key, required this.user});
 
   @override
@@ -32,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: Image.network(
-                widget.user.photoUrl ?? '',
+                widget.user.picture,
                 height: 40,
                 width: 40,
                 fit: BoxFit.cover,
@@ -42,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${widget.user.displayName}'),
+                Text('${widget.user.name}'),
                 Text(
                   '${widget.user.email}',
                   style: TextStyle(fontSize: 12),
@@ -67,8 +68,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 onPressed: () async {
-                  getit<AuthService>().logout();
-                  Navigator.of(context).pop();
+                  try {
+                    await getit<AuthService>().logout();
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppRoute.landing,
+                      (route) => false,
+                    );
+                  } catch (e) {
+                    WidgetUtils.customSnackBar(context,
+                        message: e.toString(), backgroundColor: AppColors.red);
+                  }
                 },
                 child: Text(
                   'Sign Out',

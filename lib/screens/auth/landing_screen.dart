@@ -2,6 +2,9 @@ import 'package:easy_context/easy_context.dart';
 import 'package:flutter/material.dart';
 import 'package:vital_bloom/core/routes/routes.dart';
 import 'package:vital_bloom/utils/colors.dart';
+import '../../locator.dart';
+import '../../services/auth_service.dart';
+import '../../utils/utils.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -75,20 +78,42 @@ class _LandingScreenState extends State<LandingScreen> {
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(AppRoute.login);
-              },
+              onPressed: signInWithGoogle,
               child: Text(
-                'Get Started',
+                'Sign in With Google',
                 style: TextStyle(
                     color: AppColors.lightBlue,
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
-              ),
-            ),
+              )),
           ],
         )),
       ),
     );
+  }
+
+  
+  Future<void> signInWithGoogle() async {
+    final user = await getit<AuthService>().login();
+    if (user == null) {
+      WidgetUtils.customSnackBar(context,
+          message: 'login failed', backgroundColor: AppColors.red);
+      return;
+    }
+    final idToken = (await user.authentication).idToken;
+    if (idToken == null) {
+      WidgetUtils.customSnackBar(context,
+          message: 'received token is null', backgroundColor: AppColors.red);
+      return;
+    }
+    try {
+      final u = await getit<AuthService>().verifyToken(idToken);
+      Navigator.of(context).pushNamed(AppRoute.profile, arguments: u);
+    } catch (e) {
+      print(e);
+      WidgetUtils.customSnackBar(context,
+          message: 'login failed', backgroundColor: AppColors.red);
+      return;
+    }
   }
 }

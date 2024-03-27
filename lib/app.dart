@@ -12,7 +12,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRoute.onGenerateRoute,
-      initialRoute: AppRoute.home,
+      initialRoute: AppRoute.launch,
     );
   }
 }
