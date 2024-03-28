@@ -11,6 +11,7 @@ class MainApp extends StatelessWidget {
       navigatorKey: mainKey,
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
+      locale: const Locale('en', 'US'),
       onGenerateRoute: AppRoute.onGenerateRoute,
       initialRoute: AppRoute.launch,
     );

@@ -55,4 +55,26 @@ class AuthService {
       throw e;
     }
   }
+
+  Future<User> updateProfile(
+      {required String userId, required Map<String, dynamic> payload}) async {
+    try {
+      final res = await getit<ApiService>().request(
+          endpoint: '/user/profile/$userId',
+          method: HttpMethod.PATCH,
+          headers: {
+            'Content-Type': 'application/json',
+            'cookie': 'userId=$userId;'
+          },
+          data: payload);
+      if (res.statusCode != 201) {
+        throw ApiException.fromRes(res);
+      }
+      return User.fromJson(res.data);
+    } on ApiException catch (e) {
+      throw e;
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
 }
