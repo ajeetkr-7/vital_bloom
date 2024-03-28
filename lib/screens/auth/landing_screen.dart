@@ -108,7 +108,7 @@ class _LandingScreenState extends State<LandingScreen> {
     }
     try {
       final u = await getit<AuthService>().verifyToken(idToken);
-      Navigator.of(context).pushNamed(AppRoute.profile, arguments: u);
+      Navigator.of(context).pushNamed(AppRoute.home, arguments: u);
     } catch (e) {
       print(e);
       WidgetUtils.customSnackBar(context,

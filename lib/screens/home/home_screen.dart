@@ -92,11 +92,11 @@ const List<HealthDataType> dataTypesAndroid = [
   // HealthDataType.NUTRITION,
 ];
 
-class HealthApp extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _HealthAppState createState() => _HealthAppState();
+  _HomeScreenState createState() => _HomeScreenState();
 
-  const HealthApp({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 }
 
 enum AppState {
@@ -113,7 +113,7 @@ enum AppState {
   STEPS_READY,
 }
 
-class _HealthAppState extends State<HealthApp> {
+class _HomeScreenState extends State<HomeScreen> {
   List<HealthDataPoint> _healthDataList = [];
   AppState _state = AppState.DATA_NOT_FETCHED;
   int _nofSteps = 0;

@@ -26,7 +26,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(seconds: 2), () {
         if (res != null) {
-          Navigator.of(context).pushReplacementNamed(AppRoute.profile,
+          Navigator.of(context).pushReplacementNamed(AppRoute.home,
               arguments: User.fromJson(json.decode(res)));
         } else {
           Navigator.of(context).pushReplacementNamed(AppRoute.landing);
