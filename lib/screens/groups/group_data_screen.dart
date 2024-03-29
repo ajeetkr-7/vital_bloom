@@ -1,12 +1,13 @@
 import 'package:easy_context/easy_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vital_bloom/common_widgets/buttons.dart';
 import 'package:vital_bloom/locator.dart';
 import 'package:vital_bloom/screens/groups/bloc/group_bloc.dart';
 import 'package:vital_bloom/screens/groups/bloc/group_state.dart';
 import 'package:vital_bloom/utils/colors.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../core/routes/routes.dart';
 import '../../models/user.dart';
 
@@ -27,7 +28,34 @@ class GroupDataScreen extends StatefulWidget {
 }
 
 class _GroupDataScreenState extends State<GroupDataScreen> {
+  Future<void> _launchUrl(url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   _groupboard(Map<String, dynamic> data) {
+    final controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.startsWith('https://www.youtube.com/')) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(
+          'https://mediafiles.botpress.cloud/707feefd-a534-416f-8614-5882f9f19387/webchat/bot.html'));
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -36,9 +64,24 @@ class _GroupDataScreenState extends State<GroupDataScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Family Group',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Text(
+                    'Family Group',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Column(
+                    children: [
+                      CircularIconButton(
+                          onPressed: () {
+                            _launchUrl('http://bit.ly/healthBOT');
+                          },
+                          icon: Icons.android_rounded),
+                      Text('Chat Bot')
+                    ],
+                  )
+                ],
               ),
               6.height,
               // Text('"${data['name']}"', style: TextStyle(fontSize: 18)),

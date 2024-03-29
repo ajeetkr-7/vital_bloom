@@ -19,7 +19,8 @@ class _LaunchScreenState extends State<LaunchScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(seconds: 2), () {
-        final userBloc = context.read<UserBloc>();
+        if(mounted){
+          final userBloc = context.read<UserBloc>();
         final state = userBloc.state;
         if (state is UserAuthenticated) {
           if (state.user.level != "0") {
@@ -31,6 +32,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
           }
         } else {
           Navigator.pushReplacementNamed(context, AppRoute.landing);
+        }
         }
       });
     });

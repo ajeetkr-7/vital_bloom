@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lazy_load_indexed_stack/lazy_load_indexed_stack.dart';
+import 'package:vital_bloom/screens/home/health_screen.dart';
 import 'package:vital_bloom/screens/home/home_screen.dart';
 import 'package:vital_bloom/screens/profile/profile_screen.dart';
 
@@ -28,6 +29,7 @@ class HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
   void initState() {
     _stacks = [
       HomeScreen(user: widget.user),
+      HealthScreen(),
       GroupScreen(user: widget.user),
       ProfileScreen(user: widget.user),
     ];
@@ -57,8 +59,9 @@ class HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
         },
         items: [
           _buildNavigationBarItem(index: 0, name: "home"),
-          _buildNavigationBarItem(index: 1, name: "dashboard"),
-          _buildNavigationBarItem(index: 2, name: "profile"),
+          _buildNavigationBarItem(index: 1, name: "heart"),
+          _buildNavigationBarItem(index: 2, name: "dashboard"),
+          _buildNavigationBarItem(index: 3, name: "profile"),
         ],
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
