@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vital_bloom/screens/auth/launch_screen.dart';
+import 'package:vital_bloom/screens/home/dashboard_screen.dart';
 import 'package:vital_bloom/screens/home/home_navigation_wrapper.dart';
 import 'package:vital_bloom/screens/profile/fill_bio_screen.dart';
 import 'package:vital_bloom/screens/profile/job_details_screen.dart';
@@ -18,6 +19,7 @@ class AppRoute {
   static const String questionnaire = 'questionnaire';
   static const String physicalDetails = 'physicalDetails';
   static const String jobDetails = 'jobDetails';
+  static const String groupMemberData = 'groupMemberData';
 
   // onGenerate function
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -51,6 +53,10 @@ class AppRoute {
             builder: (_) => JobDetailsScreen(
                   user: u,
                 ));
+      case groupMemberData:
+        final user = settings.arguments as User;
+        return MaterialPageRoute(
+            builder: (_) => DashboardScreen.withCubit(user: user));          
       default:
         return MaterialPageRoute(builder: (_) => const NavigationErrorPage());
     }

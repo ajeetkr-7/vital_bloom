@@ -133,4 +133,73 @@ class AuthService {
       throw ApiException(e.toString());
     }
   }
+
+  Future<Map<String, dynamic>> getMyGroupData({
+    required String userId,
+  }) async {
+    try {
+      final res = await getit<ApiService>().request(
+        endpoint: '/user/profile/$userId',
+        method: HttpMethod.GET,
+        headers: {
+          'Content-Type': 'application/json',
+          'cookie': 'userId=$userId;'
+        },
+      );
+      if (res.statusCode != 200) {
+        throw ApiException.fromRes(res);
+      }
+      return res.data as Map<String, dynamic>;
+    } on ApiException catch (e) {
+      throw e;
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<User> createGroup(
+      {required String userId, required String name}) async {
+    try {
+      final res = await getit<ApiService>().request(
+          endpoint: '/api/group/create',
+          method: HttpMethod.POST,
+          headers: {
+            'Content-Type': 'application/json',
+            'cookie': 'userId=$userId;'
+          },
+          data: {
+            'name': name,
+          });
+      if (res.statusCode != 201) {
+        throw ApiException.fromRes(res);
+      }
+      return User.fromJson(res.data);
+    } on ApiException catch (e) {
+      throw e;
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<Map<String, dynamic>> getGroupData(
+      {required String userId, required String groupId}) async {
+    try {
+      final res = await getit<ApiService>().request(
+        endpoint: '/api/group',
+        method: HttpMethod.GET,
+        headers: {
+          'Content-Type': 'application/json',
+          'cookie': 'userId=$userId;'
+        },
+      );
+      if (res.statusCode != 200) {
+        throw ApiException.fromRes(res);
+      }
+      return res.data as Map<String, dynamic>;
+    } on ApiException catch (e) {
+      throw e;
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
 }

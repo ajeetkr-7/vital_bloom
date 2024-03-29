@@ -1,11 +1,13 @@
 import 'package:easy_context/easy_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:vital_bloom/common_widgets/buttons.dart';
 import 'package:vital_bloom/locator.dart';
 import 'package:vital_bloom/models/user.dart';
 import 'package:vital_bloom/screens/home/bloc/uesr_state.dart';
 import 'package:vital_bloom/screens/home/bloc/user_bloc.dart';
+import 'package:vital_bloom/utils/colors.dart';
 
 class DashboardScreen extends StatefulWidget {
   final User user;
@@ -65,44 +67,152 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   _buildDashboard(Map<String, dynamic> data) {
+    final healthScore = data['score'] * 10;
+    // data.remove('score');
+    final data2 = data.map((key, value) => MapEntry(key, value * 10));
+    if (data2.containsKey('score')) data2.remove('score');
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leadingWidth: 30,
-        leading: CircularIconButton(
-            size: 20,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icons.arrow_back_ios_rounded),
         title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          6.width,
           ClipRRect(
             borderRadius: BorderRadius.circular(40),
             child: Image.network(
               widget.user.picture,
-              height: 40,
-              width: 40,
+              height: 36,
+              width: 36,
               fit: BoxFit.cover,
             ),
           ),
           16.width,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${widget.user.name}'),
-              Text(
-                '${widget.user.email}',
-                style: TextStyle(fontSize: 12),
-              ),
-            ],
-          )
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${widget.user.name}',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  '${widget.user.email}',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          CircularIconButton(onPressed: () {}, icon: Icons.search)
         ]),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        primary: true,
+        physics: AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
         child: Column(
           children: [
-            Text('Dashboard Data: $data'),
+            Container(
+              height: 230,
+              padding: EdgeInsets.all(12),
+              width: context.width,
+              decoration: BoxDecoration(
+                color: AppColors.lightBlue.withOpacity(0.25),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: SfRadialGauge(
+                  title: GaugeTitle(
+                      text: 'Health Score',
+                      alignment: GaugeAlignment.center,
+                      textStyle: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  enableLoadingAnimation: true,
+                  axes: <RadialAxis>[
+                    RadialAxis(
+                        showLabels: false,
+                        showTicks: false,
+                        minimum: 0,
+                        maximum: 100,
+                        startAngle: 270,
+                        endAngle: 270,
+                        ranges: <GaugeRange>[
+                          GaugeRange(
+                            startValue: 0,
+                            endValue: 100,
+                            color: Colors.grey.withOpacity(0.1),
+                          ),
+                          // GaugeRange(startValue: 100, endValue: 150, color: Colors.red)
+                        ],
+                        pointers: <GaugePointer>[
+                          RangePointer(
+                            value: healthScore,
+                            gradient: SweepGradient(
+                              colors: [
+                                Color.fromARGB(255, 83, 8, 163),
+                                Colors.blue,
+                              ],
+                              stops: [0.25, 0.75],
+                              center: Alignment.center,
+                            ),
+                          ),
+                          // NeedlePointer(
+                          //   value: 90,
+                          //   needleLength: 0.75,
+                          // )
+                        ],
+                        annotations: <GaugeAnnotation>[
+                          GaugeAnnotation(
+                              widget: Container(
+                                  child: Text(
+                                      (((healthScore * 1.0 as double) * 100)
+                                                  .round() /
+                                              100)
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold))),
+                              angle: 90,
+                              positionFactor: 0.1)
+                        ])
+                  ]),
+            ),
+            20.height,
+            GridView.count(
+              primary: false,
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              children: [
+                ...data2.entries.map((e) => Card(
+                      color: AppColors.lightBlue.withOpacity(0.45),
+                      elevation: 0,
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        width: context.width / 2.1,
+                        height: context.width / 2.1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              e.key,
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Text((((e.value * 1.0 as double) * 100).round() /
+                                    100)
+                                .toString())
+                          ],
+                        ),
+                      ),
+                    ))
+              ],
+            )
           ],
         ),
       ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lazy_load_indexed_stack/lazy_load_indexed_stack.dart';
-import 'package:vital_bloom/screens/home/health_screen.dart';
 import 'package:vital_bloom/screens/home/home_screen.dart';
 import 'package:vital_bloom/screens/profile/profile_screen.dart';
 
 import '../../models/user.dart';
 import '../../utils/colors.dart';
+import '../groups/group_screen.dart';
 
 class HomeNavigationWrapper extends StatefulWidget {
   final User user;
@@ -28,11 +28,11 @@ class HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
   void initState() {
     _stacks = [
       HomeScreen(user: widget.user),
-      HealthScreen(),
+      GroupScreen(user: widget.user),
       ProfileScreen(user: widget.user),
     ];
     super.initState();
-  }   
+  }
 
   int currentIndex = 0;
 

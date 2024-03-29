@@ -17,29 +17,34 @@ class User extends Equatable {
   final String createdAt;
   final String id;
   final String level;
+  final String? groupId;
 
-  const User(
-      {required this.googleId,
-      required this.email,
-      required this.name,
-      required this.picture,
-      required this.createdAt,
-      required this.id,
-      required this.level});
+  const User({
+    required this.googleId,
+    required this.email,
+    required this.name,
+    required this.picture,
+    required this.createdAt,
+    required this.id,
+    required this.level,
+    this.groupId,
+  });
 
   @override
   List<Object?> get props =>
-      [googleId, email, name, picture, createdAt, id, level];
+      [googleId, email, name, picture, createdAt, id, level, groupId];
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-        googleId: json['googleId'],
-        email: json['email'],
-        name: json['name'],
-        picture: json['picture'] ?? '',
-        createdAt: json['createdAt'],
-        id: json['id'],
-        level: json['level'].toString());
+      googleId: json['googleId'],
+      email: json['email'],
+      name: json['name'],
+      picture: json['picture'] ?? '',
+      createdAt: json['createdAt'],
+      id: json['id'],
+      level: json['level'].toString(),
+      groupId: json['groupId'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -50,7 +55,8 @@ class User extends Equatable {
       'picture': picture,
       'createdAt': createdAt,
       'id': id,
-      'level': level
+      'level': level,
+      'groupId': groupId,
     };
   }
 }

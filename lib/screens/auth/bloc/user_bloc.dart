@@ -7,9 +7,9 @@ class UserBloc extends Cubit<UserState> {
   final AuthService authService;
   UserBloc({required this.authService}) : super(UserUninitialized());
 
-  loadUser() {
+  loadUser() async {
     try {
-      final user = authService.getUser();
+      final user = await authService.getUser();
       if (user != null)
         emit(UserAuthenticated(user));
       else
