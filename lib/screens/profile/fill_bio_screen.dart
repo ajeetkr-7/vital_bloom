@@ -3,14 +3,17 @@ import 'dart:convert';
 import 'package:easy_context/easy_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vital_bloom/core/db/shared_prefs.dart';
 import 'package:vital_bloom/locator.dart';
 import 'package:vital_bloom/models/user.dart';
 import 'package:vital_bloom/services/auth_service.dart';
 import 'package:vital_bloom/utils/colors.dart';
 import 'package:vital_bloom/utils/enums.dart';
+import 'package:vital_bloom/utils/extensions.dart';
 import '../../core/routes/routes.dart';
 import '../../utils/utils.dart';
+import '../auth/bloc/user_bloc.dart';
 
 // class FillBioScreen extends StatefulWidget {
 //   const FillBioScreen({super.key});
@@ -64,6 +67,11 @@ class _FillBioScreenState extends State<FillBioScreen> {
     });
   }
 
+  Map<String, dynamic> sexValue = {
+    'options': ['Male', 'Female'],
+    'value': null
+  };
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -72,26 +80,27 @@ class _FillBioScreenState extends State<FillBioScreen> {
   }
 
   void signUp() async {
-    if (formKey.currentState?.validate() ?? false) {
+    if ((formKey.currentState?.validate() ?? false) &&
+        sexValue['value'] != null) {
       final userName = usernameController.text;
       final age = ageController.text;
       final height = heightController.text;
       final weight = weightController.text;
 
       try {
-        final user = await getit<AuthService>().updateProfile(
-            userId: widget.user.id,
-            payload: {
-              'name': userName,
-              'age': age,
-              'height': height,
-              'weight': weight,
-              'sex': 'Male'
-            });
+        final user = await getit<AuthService>()
+            .updateProfile(userId: widget.user.id, payload: {
+          'name': userName,
+          'age': age,
+          'height': height,
+          'weight': weight,
+          'sex': sexValue['value']
+        });
         // save in sharedpref
         final res = await getit<SharedPrefs>()
             .setValue(SharedPrefKey.user.toString(), json.encode(user));
         if (res) {
+          context.read<UserBloc>().setUser(user);
           Navigator.of(context).pushNamedAndRemoveUntil(
               AppRoute.home, (route) => false,
               arguments: user);
@@ -103,6 +112,35 @@ class _FillBioScreenState extends State<FillBioScreen> {
     }
   }
 
+  Widget buildRadio(Map<String, dynamic> question) => Container(
+        margin: EdgeInsets.only(bottom: 12),
+        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...(question['options'] as List<String>)
+                .mapIndexed((option, index) => RadioListTile<String>(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide.none),
+                      splashRadius: 0,
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(option,
+                          style: TextStyle(
+                              fontSize: 16, color: AppColors.darkGrey)),
+                      value: option,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      groupValue: question['value'],
+                      onChanged: (value) =>
+                          setState(() => question['value'] = value),
+                    ))
+                .toList(),
+          ],
+        ),
+      );
   // void signUp() async {}
 
   @override
@@ -327,7 +365,7 @@ class _FillBioScreenState extends State<FillBioScreen> {
                       //     ? null
                       //     : 'enter valid email';
                     },
-                    onTapOutside: (event) => ageFocusNode.unfocus(),
+                    onTapOutside: (event) => heightFocusNode.unfocus(),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       LengthLimitingTextInputFormatter(3),
@@ -396,7 +434,7 @@ class _FillBioScreenState extends State<FillBioScreen> {
                       //     ? null
                       //     : 'enter valid email';
                     },
-                    onTapOutside: (event) => ageFocusNode.unfocus(),
+                    onTapOutside: (event) => weightFocusNode.unfocus(),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       LengthLimitingTextInputFormatter(3),
@@ -444,6 +482,14 @@ class _FillBioScreenState extends State<FillBioScreen> {
                           )),
                     ),
                   ),
+                  12.height,
+                  12.height,
+                  Text('Biological Sex',
+                      style: TextStyle(
+                          color: AppColors.dark.withOpacity(0.9),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500)),
+                  buildRadio(sexValue),
                   // Spacer(),
                   32.height,
                   ElevatedButton(

@@ -1,13 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:vital_bloom/core/db/shared_prefs.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vital_bloom/core/routes/routes.dart';
-import 'package:vital_bloom/locator.dart';
+import 'package:vital_bloom/screens/auth/bloc/user_bloc.dart';
 import 'package:vital_bloom/utils/colors.dart';
-import 'package:vital_bloom/utils/enums.dart';
 
-import '../../models/user.dart';
+import 'bloc/uesr_state.dart';
 
 class LaunchScreen extends StatefulWidget {
   const LaunchScreen({super.key});
@@ -20,16 +17,20 @@ class _LaunchScreenState extends State<LaunchScreen> {
   @override
   void initState() {
     super.initState();
-    final res =
-        getit<SharedPrefs>().getValue(SharedPrefKey.user.toString()) as String?;
-    print(res);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(seconds: 2), () {
-        if (res != null) {
-          Navigator.of(context).pushReplacementNamed(AppRoute.home,
-              arguments: User.fromJson(json.decode(res)));
+        final userBloc = context.read<UserBloc>();
+        final state = userBloc.state;
+        if (state is UserAuthenticated) {
+          if (state.user.level != "0") {
+            Navigator.of(context).pushReplacementNamed(AppRoute.home,
+                arguments: state.user);
+          } else {
+            Navigator.of(context).pushReplacementNamed(AppRoute.fillBio,
+                arguments: state.user);
+          }
         } else {
-          Navigator.of(context).pushReplacementNamed(AppRoute.landing);
+          Navigator.pushReplacementNamed(context, AppRoute.landing);
         }
       });
     });

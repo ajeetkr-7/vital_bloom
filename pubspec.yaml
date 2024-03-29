@@ -7,12 +7,14 @@ environment:
   sdk: '>=3.2.3 <4.0.0'
 
 dependencies:
+  bloc: ^8.1.4
   dartz: ^0.10.1
   dio: ^5.4.2
   easy_context: ^1.0.1
   equatable: ^2.0.5
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.5
   flutter_svg: ^2.0.10+1
   get_it: ^7.6.7
   google_sign_in: ^6.2.1
@@ -20,6 +22,7 @@ dependencies:
   lazy_load_indexed_stack: ^1.1.0
   permission_handler: ^11.3.1
   shared_preferences: ^2.2.2
+  syncfusion_flutter_gauges: ^25.1.37
 
 dev_dependencies:
   flutter_test:

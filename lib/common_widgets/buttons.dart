@@ -1,5 +1,6 @@
-
 import 'package:flutter/material.dart';
+
+import '../utils/colors.dart';
 
 ///Custom Icon Button with circular Splash
 class CircularIconButton extends StatelessWidget {
@@ -34,3 +35,12 @@ class CircularIconButton extends StatelessWidget {
     );
   }
 }
+
+ButtonStyle primaryButtonStyle({Color backgroundColor = AppColors.black}) =>
+    ElevatedButton.styleFrom(
+      backgroundColor: backgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+    );

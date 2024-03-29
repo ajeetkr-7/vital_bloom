@@ -77,4 +77,60 @@ class AuthService {
       throw ApiException(e.toString());
     }
   }
+
+  User? getUser() {
+    final res =
+        getit<SharedPrefs>().getValue(SharedPrefKey.user.toString()) as String?;
+    if (res == null) {
+      return null;
+    }
+    return User.fromJson(json.decode(res));
+  }
+
+  Future<User> updateHealthInfo(
+      {String type = 'generalInfo',
+      required String userId,
+      required Map<String, dynamic> payload}) async {
+    try {
+      final res = await getit<ApiService>().request(
+          endpoint: '/user/profile/$type/$userId',
+          method: HttpMethod.PATCH,
+          headers: {
+            'Content-Type': 'application/json',
+            'cookie': 'userId=$userId;'
+          },
+          data: payload);
+      if (res.statusCode != 201) {
+        throw ApiException.fromRes(res);
+      }
+      return User.fromJson(res.data);
+    } on ApiException catch (e) {
+      throw e;
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<Map<String, dynamic>> getDashboardData({
+    required String userId,
+  }) async {
+    try {
+      final res = await getit<ApiService>().request(
+        endpoint: '/api/health-score',
+        method: HttpMethod.GET,
+        headers: {
+          'Content-Type': 'application/json',
+          'cookie': 'userId=$userId;'
+        },
+      );
+      if (res.statusCode != 200) {
+        throw ApiException.fromRes(res);
+      }
+      return res.data as Map<String, dynamic>;
+    } on ApiException catch (e) {
+      throw e;
+    } on Exception catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
 }

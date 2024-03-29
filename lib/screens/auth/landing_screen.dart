@@ -1,10 +1,12 @@
 import 'package:easy_context/easy_context.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vital_bloom/core/routes/routes.dart';
 import 'package:vital_bloom/utils/colors.dart';
 import '../../locator.dart';
 import '../../services/auth_service.dart';
 import '../../utils/utils.dart';
+import 'bloc/user_bloc.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -71,28 +73,27 @@ class _LandingScreenState extends State<LandingScreen> {
             ),
             48.height,
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.black,
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.black,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-              ),
-              onPressed: signInWithGoogle,
-              child: Text(
-                'Sign in With Google',
-                style: TextStyle(
-                    color: AppColors.lightBlue,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-              )),
+                onPressed: signInWithGoogle,
+                child: Text(
+                  'Sign in With Google',
+                  style: TextStyle(
+                      color: AppColors.lightBlue,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500),
+                )),
           ],
         )),
       ),
     );
   }
 
-  
   Future<void> signInWithGoogle() async {
     final user = await getit<AuthService>().login();
     if (user == null) {
@@ -108,9 +109,10 @@ class _LandingScreenState extends State<LandingScreen> {
     }
     try {
       final u = await getit<AuthService>().verifyToken(idToken);
-      if(u.level!=0){
+      context.read<UserBloc>().setUser(u);
+      if (u.level != "0") {
         Navigator.of(context).pushNamed(AppRoute.home, arguments: u);
-      }else{
+      } else {
         Navigator.of(context).pushNamed(AppRoute.fillBio, arguments: u);
       }
     } catch (e) {

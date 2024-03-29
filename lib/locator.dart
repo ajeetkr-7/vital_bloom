@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'core/api/api_service.dart';
 import 'core/db/shared_prefs.dart';
+import 'screens/auth/bloc/user_bloc.dart';
 import 'services/auth_service.dart';
 import 'utils/constants.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -18,6 +19,7 @@ Future<void> setup() async {
   getit.registerLazySingleton<AuthService>(() => AuthService());
   // providers
   // cubits and blocs
+  getit.registerFactory(() => UserBloc(authService: getit()));
 }
 
 Future<Dio> initDio() async {

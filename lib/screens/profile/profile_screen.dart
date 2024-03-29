@@ -1,5 +1,6 @@
 import 'package:easy_context/easy_context.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vital_bloom/common_widgets/buttons.dart';
 import 'package:vital_bloom/core/routes/routes.dart';
 import 'package:vital_bloom/models/user.dart';
@@ -7,6 +8,7 @@ import 'package:vital_bloom/services/auth_service.dart';
 import 'package:vital_bloom/utils/utils.dart';
 import '../../locator.dart';
 import '../../utils/colors.dart';
+import '../auth/bloc/user_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -70,10 +72,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () async {
                   try {
                     await getit<AuthService>().logout();
+                    context.read<UserBloc>().clearUser();
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       AppRoute.landing,
                       (route) => false,
                     );
+
                   } catch (e) {
                     WidgetUtils.customSnackBar(context,
                         message: e.toString(), backgroundColor: AppColors.red);
