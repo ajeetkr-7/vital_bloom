@@ -66,6 +66,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  String getABSIText(double value) {
+    if (value < -0.272) {
+      return "Low Mortality Risk";
+    } else if (value >= -0.272 && value < 0.229) {
+      return "Average Mortality Risk";
+    } else
+      return "High Mortality Risk";
+  }
+
   _buildDashboard(Map<String, dynamic> data) {
     final healthScore = data['score'] * 10;
     // data.remove('score');
@@ -187,35 +196,140 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisCount: 2,
               shrinkWrap: true,
               children: [
-                ...data2.entries.map((e) => Card(
-                      color: AppColors.lightBlue.withOpacity(0.45),
-                      elevation: 0,
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        width: context.width / 2.1,
-                        height: context.width / 2.1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              e.key,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Text((((e.value * 1.0 as double) * 100).round() /
-                                    100)
-                                .toString())
-                          ],
+                Card(
+                  color: AppColors.lightBlue.withOpacity(0.45),
+                  elevation: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    width: context.width / 2.1,
+                    height: context.width / 2.1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'ABSI - Z Score',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    ))
+                        Text((((data2['absi_z_score'] * 1.0 as double) * 100)
+                                    .round() /
+                                100)
+                            .toString()),
+                        Text(getABSIText(
+                            (((data2['absi_z_score'] * 1.0 as double) * 100)
+                                    .round() /
+                                100)))
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  color: AppColors.lightBlue.withOpacity(0.45),
+                  elevation: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    width: context.width / 2.1,
+                    height: context.width / 2.1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total Life Lost',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Text((((data2['total_life_lost'] * 1.0 as double) * 100)
+                                    .round() /
+                                100)
+                            .toString()),
+                        // Text(getABSIText(
+                        //     (((data2['total_life_lost'] * 1.0 as double) * 100)
+                        //             .round() /
+                        //         100)))
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  color: AppColors.lightBlue.withOpacity(0.45),
+                  elevation: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    width: context.width / 2.1,
+                    height: context.width / 2.1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Waist/Hip Ratio',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Text((((data2['whr'] * 1.0 as double) * 100).round() /
+                                100)
+                            .toString()),
+                        Text(getWHRText(
+                                ((data2['whr'] * 1.0 as double) * 100).round() /
+                                    100)
+                            .toString()),
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  color: AppColors.lightBlue.withOpacity(0.45),
+                  elevation: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    width: context.width / 2.1,
+                    height: context.width / 2.1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'OSA Score',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Text((((data2['osa_score'] * 1.0 as double) * 100)
+                                    .round() /
+                                100)
+                            .toString()),
+                        Text(getOsa(
+                            (((data2['osa_score'] * 1.0 as double) * 100)
+                                    .round() /
+                                100)))
+                      ],
+                    ),
+                  ),
+                ),
               ],
             )
           ],
         ),
       ),
     );
+  }
+
+  String getWHRText(double d) {
+    if (d > 0.5) {
+      return "High Risk of Several Chronic diseases";
+    } else {
+      return "Low Risk of Chronic diseases";
+    }
+  }
+
+  String getOsa(double d) {
+    if (d >= 0 && d <= 2) {
+      return "Low Risk of Obstructive Sleep Apnea";
+    } else if (d > 2 && d <= 5) {
+      return "No risk of Obstructive Sleep Apnea";
+    } else {
+      return "High Risk of Obstructive Sleep Apnea";
+    }
   }
 }

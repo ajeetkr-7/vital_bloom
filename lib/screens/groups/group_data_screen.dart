@@ -5,6 +5,7 @@ import 'package:vital_bloom/common_widgets/buttons.dart';
 import 'package:vital_bloom/locator.dart';
 import 'package:vital_bloom/screens/groups/bloc/group_bloc.dart';
 import 'package:vital_bloom/screens/groups/bloc/group_state.dart';
+import 'package:vital_bloom/utils/colors.dart';
 
 import '../../core/routes/routes.dart';
 import '../../models/user.dart';
@@ -36,19 +37,28 @@ class _GroupDataScreenState extends State<GroupDataScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Group Data',
+                'Family Group',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              12.height,
-              Text('Group Name: ${data['name']}'),
+              6.height,
+              // Text('"${data['name']}"', style: TextStyle(fontSize: 18)),
               data['members'].length > 0
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         12.height,
-                        Text('Members:'),
+                        Text(
+                          'Members:',
+                          style: TextStyle(fontSize: 18),
+                        ),
                         12.height,
-                        ListView.builder(
+                        GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 8,
+                                  mainAxisSpacing: 8,
+                                  childAspectRatio: 1.5),
                           shrinkWrap: true,
                           itemCount: data['members'].length,
                           itemBuilder: (context, index) {
@@ -61,13 +71,18 @@ class _GroupDataScreenState extends State<GroupDataScreen> {
                                 );
                               },
                               child: Container(
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(data['members'][index]['name']),
-                              ),
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.lightBlue.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    data['members'][index]['name'],
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500),
+                                  )),
                             );
                           },
                         ),

@@ -77,7 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       AppRoute.landing,
                       (route) => false,
                     );
-
                   } catch (e) {
                     WidgetUtils.customSnackBar(context,
                         message: e.toString(), backgroundColor: AppColors.red);
@@ -90,25 +89,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
                 )),
-            8.height,
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.black,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(AppRoute.home);
-                },
-                child: Text(
-                  'Go to Home',
-                  style: TextStyle(
-                      color: AppColors.lightBlue,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ))
           ],
         )));
   }
