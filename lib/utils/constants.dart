@@ -1,1 +1,1 @@
-const apiBaseURL = "http://127.0.0.1:8081";
+const apiBaseURL = "https://vital-bloom-backend-js.vercel.app/";

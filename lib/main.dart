@@ -14,9 +14,10 @@ Future<void> main() async {
 
 /// bootstraps the application with all the required injections over the app
 Widget bootStrappedApp({required Widget child}) {
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (context) => getit<UserBloc>()..loadUser(), lazy: false,)
-    ],
-    child: child);
+  return MultiBlocProvider(providers: [
+    BlocProvider(
+      create: (context) => getit<UserBloc>()..loadUser(),
+      lazy: false,
+    )
+  ], child: child);
 }

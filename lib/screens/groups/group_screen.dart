@@ -9,6 +9,7 @@ import 'package:vital_bloom/screens/auth/bloc/uesr_state.dart';
 import 'package:vital_bloom/screens/auth/bloc/user_bloc.dart';
 import 'package:vital_bloom/screens/auth/launch_screen.dart';
 import 'package:vital_bloom/services/auth_service.dart';
+import 'package:vital_bloom/utils/utils.dart';
 import '../../common_widgets/buttons.dart';
 import '../../utils/colors.dart';
 import 'group_data_screen.dart';
@@ -137,11 +138,17 @@ class _GroupScreenState extends State<GroupScreen> {
                                     usernameFocusNode.requestFocus();
                                     return;
                                   }
-                                  final user = await getit<AuthService>()
-                                      .createGroup(
-                                          name: usernameController.text,
-                                          userId: usernameController.text);
-                                  context.read<UserBloc>().setUser(user);
+                                  try {
+                                    final user = await getit<AuthService>()
+                                        .createGroup(
+                                            name: usernameController.text,
+                                            userId: state.user.id);
+                                    context.read<UserBloc>().setUser(user);
+                                  } catch (e) {
+                                    WidgetUtils.customSnackBar(context,
+                                        message: e.toString(),
+                                        backgroundColor: AppColors.red);
+                                  }
                                 },
                                 label: Text(
                                   'Create the Group',
